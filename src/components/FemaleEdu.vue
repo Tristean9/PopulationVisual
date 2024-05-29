@@ -1,6 +1,6 @@
 <template>
 	<h3>6岁及以上大专以上学历女性占比</h3>
-    <div ref="chart"></div>
+	<div ref="chart"></div>
 </template>
 
 <script setup>
@@ -15,7 +15,7 @@ const chart = ref(null);
 // 加载数据
 async function loadData() {
 	const data = await d3.csv(`${import.meta.env.BASE_URL}data/受教育程度.csv`);
-	console.log(data);
+	// console.log(data);
 
 	const chartData = data
 		.map((d) => ({
@@ -23,6 +23,8 @@ async function loadData() {
 			value: +d["大专及以上女性人口占比"],
 		}))
 		.reverse();
+
+	// console.log(chartData);
 
 	return chartData;
 }

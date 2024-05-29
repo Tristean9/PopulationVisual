@@ -50,7 +50,7 @@ function drawChart(svg, data) {
 		.attr("height", 20) // 设置固定高度
 		.attr("fill", "steelblue");
 
-	// 添加建筑物名称标签
+	// 添加原因
 	svg.selectAll(".label")
 		.data(data)
 		.enter()

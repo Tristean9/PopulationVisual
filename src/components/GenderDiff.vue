@@ -20,7 +20,7 @@ async function loadData() {
 		`${import.meta.env.BASE_URL}data/男女性观念差别.csv`
 	);
 
-	console.log(data);
+	// console.log(data);
 
 	const chartData = data
 		.map((d) => ({
