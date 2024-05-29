@@ -65,6 +65,10 @@ button:focus-visible {
   text-align: center;
 }
 
+.container {
+	display: flex;
+	flex-direction: column;
+}
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;

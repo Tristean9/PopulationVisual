@@ -1,13 +1,16 @@
 <template>
-	<h1>中国人口数据总览</h1>
-	<div ref="lineChart"></div>
-	<div ref="barChart"></div>
-	<p>
-		中国人口自然增长率在2000年后整体呈现逐渐降低趋势，在22年和23年出现负增长。22年的自然增长率为-0.6%，23年为-1.4%
-	</p>
-	<div id="tooltip">
-		<p><span id="tooltip-year"></span></p>
-		<p><span id="tooltip-population"></span></p>
+	<div class="container">
+		<h1>中国人口数据总览</h1>
+        <h3>人口增长情况（2000-2023）</h3>
+		<div ref="lineChart"></div>
+		<div ref="barChart"></div>
+		<p>
+			中国人口自然增长率在2000年后整体呈现逐渐降低趋势，在22年和23年出现负增长。22年的自然增长率为-0.6%，23年为-1.4%
+		</p>
+		<div id="tooltip">
+			<p><span id="tooltip-year"></span></p>
+			<p><span id="tooltip-population"></span></p>
+		</div>
 	</div>
 </template>
 
@@ -144,6 +147,7 @@ function drawLineChart(svg, data) {
 		.attr("y", height - 10)
 		.attr("font-size", 12)
 		.text("年份");
+
 }
 
 // 绘制柱状图
@@ -222,9 +226,8 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-
 #tooltip {
-    display: none;
+	display: none;
 	position: absolute;
 	padding: 10px;
 	background: lightgray;
