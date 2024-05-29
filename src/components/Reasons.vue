@@ -26,14 +26,14 @@ async function loadData() {
 
 	// console.log(data);
 
-	const barData = data.map((d) => ({
+	const chartData = data.map((d) => ({
 		reason: d["因素"],
 		value: +d["百分比"],
 	}));
 
-	console.log(barData);
+	// console.log(chartData);
 
-	return barData;
+	return chartData;
 }
 
 function drawChart(svg, data) {
@@ -85,6 +85,7 @@ onMounted(async () => {
 
 	drawChart(svg, data);
 });
+
 </script>
 
 <style scoped></style>

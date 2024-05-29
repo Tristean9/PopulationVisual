@@ -127,13 +127,12 @@ function drawLineChart(svg, data) {
 		.attr("x", xPosition + 10)
 		.attr("y", 200)
 		.attr("font-size", 12)
-		.text("新冠首个确证病例发病");
+		.text("新冠首个确诊病例发病");
 
 	g.append("text")
 		.attr("x", xPosition + 10)
 		.attr("y", 220)
 		.attr("font-size", 12)
-		.text("新冠首个确证病例发病")
 		.text("（2019.12.1）");
 
 	g.append("text")
@@ -235,6 +234,7 @@ onMounted(async () => {
 	border-radius: 4px;
 	pointer-events: none;
 	z-index: 10;
-	width: 300;
+	width: 200;
+    height: 100px;
 }
 </style>
