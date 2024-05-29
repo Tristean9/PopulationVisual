@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="container">
 		<h1>相关政策总览</h1>
 		<div ref="chart"></div>
 		<div
@@ -50,7 +50,7 @@ const showTooltip = ref(null);
 
 const width = 800;
 const height = 400;
-const margin = { top: 20, right: 100, bottom: 30, left: 50 };
+const margin = { top: 20, right: 100, bottom: 50, left: 60 };
 const chart = ref(null);
 const tooltipLeft = ref(null);
 const tooltipMid = ref(null);
@@ -136,10 +136,23 @@ function drawChart(svg, data) {
 			"transform",
 			`translate(0, ${height - margin.top - margin.bottom})`
 		)
-		.call(d3.axisBottom(xScale));
+		.call(d3.axisBottom(xScale))
+		.append("text")
+		.attr("x", (width - margin.left - margin.right) / 2)
+		.attr("y", 40)
+		.attr("fill", "black")
+		.style("text-anchor", "middle")
+		.text("年份");
 
 	// 添加Y轴
-	g.append("g").attr("class", "y-axis").call(d3.axisLeft(yScale));
+	g.append("g").attr("class", "y-axis").call(d3.axisLeft(yScale))
+		.append("text")
+		.attr("transform", "rotate(-90)")
+		.attr("x", -(height - margin.top - margin.bottom) / 2)
+		.attr("y", -50)
+		.attr("fill", "black")
+		.style("text-anchor", "middle")
+		.text("生育率");
 
 	// 添加图例
 	const legend = svg
@@ -231,7 +244,6 @@ onMounted(async () => {
 	});
 });
 </script>
-
 <style scoped>
 .tooltip {
 	position: absolute;

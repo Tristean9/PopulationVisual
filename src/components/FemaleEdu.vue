@@ -9,7 +9,7 @@ import * as d3 from "d3";
 
 const width = 800;
 const height = 400;
-const margin = { top: 20, right: 30, bottom: 30, left: 50 };
+const margin = { top: 20, right: 30, bottom: 50, left: 60 };
 const chart = ref(null);
 
 // 加载数据
@@ -68,23 +68,23 @@ function drawChart(svg, data) {
 			"transform",
 			`translate(0, ${height - margin.top - margin.bottom})`
 		)
-		.call(d3.axisBottom(xScale));
+		.call(d3.axisBottom(xScale))
+		.append("text")
+		.attr("x", (width - margin.left - margin.right) / 2)
+		.attr("y", 40)
+		.attr("fill", "black")
+		.style("text-anchor", "middle")
+		.text("年份");
 
 	// 添加Y轴
-	g.append("g").attr("class", "y-axis").call(d3.axisLeft(yScale));
-
-	// 添加坐标轴标题
-	g.append("text")
-		.attr("x", 10)
-		.attr("y", -10)
-		.attr("font-size", 12)
-		.text("占比");
-
-	g.append("text")
-		.attr("x", width - margin.right - 50)
-		.attr("y", height - margin.top - 40)
-		.attr("font-size", 12)
-		.text("年份");
+	g.append("g").attr("class", "y-axis").call(d3.axisLeft(yScale))
+		.append("text")
+		.attr("transform", "rotate(-90)")
+		.attr("x", -(height - margin.top - margin.bottom) / 2)
+		.attr("y", -50)
+		.attr("fill", "black")
+		.style("text-anchor", "middle")
+		.text("大专及以上女性人口占比 (%)");
 }
 
 onMounted(async () => {
@@ -99,7 +99,6 @@ onMounted(async () => {
 	drawChart(svg, data);
 });
 </script>
-
 <style scoped>
 .axis path,
 .axis line {

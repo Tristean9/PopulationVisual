@@ -27,8 +27,6 @@ async function loadData() {
 		`${import.meta.env.BASE_URL}data/人口增长情况（2000-2023）.csv`
 	);
 
-	// console.log(data);
-
 	const lineData = data.map((d) => ({
 		year: d["指标"],
 		population: +d["年末总人口(万人)"],
@@ -44,7 +42,7 @@ async function loadData() {
 
 // 绘制折线图
 function drawLineChart(svg, data) {
-	const margin = { top: 20, right: 30, bottom: 30, left: 50 };
+	const margin = { top: 20, right: 30, bottom: 50, left: 60 };
 	const width = 800 - margin.left - margin.right;
 	const height = 500 - margin.top - margin.bottom;
 
@@ -107,10 +105,23 @@ function drawLineChart(svg, data) {
 	// 添加X轴
 	g.append("g")
 		.attr("transform", `translate(0, ${height})`)
-		.call(d3.axisBottom(xScale));
+		.call(d3.axisBottom(xScale))
+		.append("text")
+		.attr("x", width / 2)
+		.attr("y", 40)
+		.attr("fill", "black")
+		.style("text-anchor", "middle")
+		.text("年份");
 
 	// 添加Y轴
-	g.append("g").call(d3.axisLeft(yScale));
+	g.append("g").call(d3.axisLeft(yScale))
+		.append("text")
+		.attr("transform", "rotate(-90)")
+		.attr("x", -height / 2)
+		.attr("y", -50)
+		.attr("fill", "black")
+		.style("text-anchor", "middle")
+		.text("总人口 (万人)");
 
 	// 添加竖直虚线
 	const xPosition = xScale("2020");
@@ -135,23 +146,11 @@ function drawLineChart(svg, data) {
 		.attr("font-size", 12)
 		.text("（2019.12.1）");
 
-	g.append("text")
-		.attr("x", 10)
-		.attr("y", 0)
-		.attr("font-size", 12)
-		.text("年末总人口（万人）");
-
-	g.append("text")
-		.attr("x", width - 4)
-		.attr("y", height - 10)
-		.attr("font-size", 12)
-		.text("年份");
-
 }
 
 // 绘制柱状图
 function drawBarChart(svg, data) {
-	const margin = { top: 20, right: 30, bottom: 30, left: 50 };
+	const margin = { top: 20, right: 30, bottom: 50, left: 60 };
 	const width = 800 - margin.left - margin.right;
 	const height = 500 - margin.top - margin.bottom;
 
@@ -186,22 +185,24 @@ function drawBarChart(svg, data) {
 	// 添加X轴
 	g.append("g")
 		.attr("transform", `translate(0, ${height})`)
-		.call(d3.axisBottom(xScale));
+		.call(d3.axisBottom(xScale))
+		.append("text")
+		.attr("x", width / 2)
+		.attr("y", 40)
+		.attr("fill", "black")
+		.style("text-anchor", "middle")
+		.text("年份");
 
 	// 添加Y轴
-	g.append("g").call(d3.axisLeft(yScale));
+	g.append("g").call(d3.axisLeft(yScale))
+		.append("text")
+		.attr("transform", "rotate(-90)")
+		.attr("x", -height / 2)
+		.attr("y", -50)
+		.attr("fill", "black")
+		.style("text-anchor", "middle")
+		.text("增长率 (%)");
 
-	g.append("text")
-		.attr("x", 10)
-		.attr("y", 0)
-		.attr("font-size", 12)
-		.text("人口自然增长率（‰）");
-
-	g.append("text")
-		.attr("x", width - 4)
-		.attr("y", height - 10)
-		.attr("font-size", 12)
-		.text("年份");
 }
 
 onMounted(async () => {
@@ -223,7 +224,6 @@ onMounted(async () => {
 	drawBarChart(svgBar, barData);
 });
 </script>
-
 <style scoped>
 #tooltip {
 	display: none;
