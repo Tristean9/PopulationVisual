@@ -85,7 +85,6 @@ onMounted(async () => {
 
 	drawChart(svg, data);
 });
-
 </script>
 
 <style scoped></style>
