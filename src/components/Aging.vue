@@ -77,7 +77,7 @@ function drawChart(svg, data) {
 	const color = d3
 		.scaleOrdinal()
 		.domain(["young", "middle", "old"])
-		.range(["#35d935", "#87CEFA", "#FFA500"]);
+		.range(["#48d148", "#87CEFA", "#FFA500"]);
 
 	const stack = d3.stack().keys(["young", "middle", "old"]);
 
@@ -177,17 +177,5 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-.container {
-	width: 100%;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-}
-.line {
-	width: 100%;
-	min-width: 10px;
-	height: 30px;
-	background-color: #bd3124;
-}
 
 </style>

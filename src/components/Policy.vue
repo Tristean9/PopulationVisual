@@ -266,10 +266,17 @@ onMounted(async () => {
 	text-align: start;
 	line-height: 36px;
 }
+
+#button-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
 .tooltip {
 	position: absolute;
 	background-color: #f9f9f9;
 	border: 1px solid #ccc;
+    border-radius: 4px;
 	padding: 0 10px;
 	z-index: 10;
 

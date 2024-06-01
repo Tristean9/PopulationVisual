@@ -192,8 +192,8 @@ onMounted(async () => {
 	display: none;
 	position: absolute;
 	padding: 10px;
-	background: lightgray;
-	border: 1px solid gray;
+	background: #f9f9f9;
+	border: 1px solid #ccc;
 	border-radius: 4px;
 	pointer-events: none;
 	z-index: 10;

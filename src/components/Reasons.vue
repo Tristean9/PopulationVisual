@@ -1,6 +1,6 @@
 <template>
 	<div class="container">
-		<h1>时间不足和金钱压力成为“不愿生”的主要原因</h1>
+		<h1>时间不足和金钱压力成为“不愿生”的主要原因，生育不再是义务</h1>
 		<div class="row-container">
 			<div class="chart-container">
 				<h2>影响生育意愿的因素</h2>
@@ -83,6 +83,6 @@ onMounted(async () => {
 
 <style scoped>
 .text-container{
-    margin-left: 4rem
+    margin-left: 5rem
 }
 </style>

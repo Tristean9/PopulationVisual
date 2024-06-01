@@ -211,6 +211,7 @@ watch(selectedYear, (newValue) => {
 	position: absolute;
 	background-color: #f9f9f9;
 	border: 1px solid #d3d3d3;
+    border-radius: 4px;
 	padding: 5px;
 	display: none;
 }
