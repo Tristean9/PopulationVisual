@@ -9,7 +9,7 @@
 				<h2 id="subtitle">一份对人口负增长原因进行洞察的指南</h2>
 			</div>
 		</div>
-		<div id="line"></div>
+		<div class="line"></div>
 		<div class="bottom">
 			<p>这是一份关于人口数据的报告</p>
 			<p>
@@ -42,12 +42,18 @@ const imagePath = `${import.meta.env.BASE_URL}introduction.png`;
 	color: #bd3124;
 	flex: 2;
 }
-h1 {
-	text-align: start;
+
+#title {
+    font-size: 3rem;
+    line-height: 36px;
+    font-weight: bold;
+    text-align: start;
 	margin-left: 10%;
 }
-h2 {
-	text-align: end;
+#subtitle {
+    font-size: 1.8rem;
+    line-height: 36px;
+    text-align: end;
 	margin-right: 10%;
 }
 
@@ -63,7 +69,7 @@ h2 {
 	object-fit: contain; /* 保持图片的原始宽高比 */
 }
 
-#line {
+.line {
 	width: 100%;
 	min-width: 10px;
 	height: 30px;
@@ -77,5 +83,8 @@ h2 {
     line-height: 36px;
     font-weight: bold;
     flex: 2
+}
+.bottom p {
+    font-size: 1.6rem;
 }
 </style>

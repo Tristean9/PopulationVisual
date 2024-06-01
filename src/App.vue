@@ -1,23 +1,25 @@
 <template>
+    <!-- <test /> -->
 	<introduction />
 	<overview />
-	<Reasons />
-	<word-cloud />
+	<reasons />
 	<birth-not-duty />
-	<heatmap />
+	<region-diff />
 	<policy />
 	<aging />
+	<conclusion />
 </template>
 
 <script setup>
+
 import Introduction from "./components/Introduction.vue";
 import Overview from "./components/Overview.vue";
 import Reasons from "./components/Reasons.vue";
-import WordCloud from "./components/WordCloud.vue";
 import BirthNotDuty from "./components/BirthNotDuty.vue";
 import Policy from "./components/Policy.vue";
 import Aging from "./components/Aging.vue";
-import Heatmap from "./components/Heatmap.vue";
+import RegionDiff from "./components/RegionDiff.vue";
+import Conclusion from "./components/Conclusion.vue";
 </script>
 
 <style scoped></style>

@@ -1,7 +1,15 @@
 <template>
 	<div class="container">
 		<h1>相关政策总览</h1>
-		<div ref="chart"></div>
+		<div class="text-container">
+			<p>
+				虽然2022年后，不同地区出台了很对针对多子女家庭的优惠政策。但从数据角度可以看出效果微小。对人口影响较为严重的仍然是整体的宏观调控。独生子女政策的影响十分巨大。开放二胎的政策虽使得人口数量短暂回升，但仍无法阻止减少的大趋势问题。对多子女家庭的地区优惠政策，整体在2021年后进行实施。但从结果来看收效甚微。
+			</p>
+		</div>
+		<div class="chart-container">
+			<h2>部分省份人口自然增长率对比</h2>
+			<div ref="chart"></div>
+		</div>
 		<div
 			ref="tooltipLeft"
 			class="tooltip left"
@@ -34,11 +42,6 @@
 			</button>
 			<button @click="showTooltip = 'right'">2021年：开放三胎政策</button>
 		</div>
-		<div class="text-container">
-			<p>
-				虽然2022年后，不同地区出台了很对针对多子女家庭的优惠政策。但从数据角度可以看出效果微小。对人口影响较为严重的仍然是整体的宏观调控。独生子女政策的影响十分巨大。开放二胎的政策虽使得人口数量短暂回升，但仍无法阻止减少的大趋势问题。对多子女家庭的地区优惠政策，整体在2021年后进行实施。但从结果来看收效甚微。
-			</p>
-		</div>
 	</div>
 </template>
 
@@ -48,8 +51,8 @@ import * as d3 from "d3";
 
 const showTooltip = ref(null);
 
-const width = 800;
-const height = 400;
+const width = 1000;
+const height = 600;
 const margin = { top: 20, right: 100, bottom: 50, left: 60 };
 const chart = ref(null);
 const tooltipLeft = ref(null);
@@ -98,7 +101,7 @@ function drawChart(svg, data) {
 	const yScale = d3
 		.scaleLinear()
 		.domain([
-			d3.min(data, (c) => d3.min(c.oneData, (d) => d.value)) * 0.95,
+			d3.min(data, (c) => d3.min(c.oneData, (d) => d.value)) * 1.05,
 			d3.max(data, (c) => d3.max(c.oneData, (d) => d.value)) * 1.05,
 		])
 		.range([height - margin.top - margin.bottom, 0]);
@@ -137,22 +140,35 @@ function drawChart(svg, data) {
 			`translate(0, ${height - margin.top - margin.bottom})`
 		)
 		.call(d3.axisBottom(xScale))
-		.append("text")
+		.selectAll("text")
+		.style("font-size", "12px");
+
+	// 添加X轴标签
+	g.append("text")
+		.attr("class", "x-axis-label")
 		.attr("x", (width - margin.left - margin.right) / 2)
-		.attr("y", 40)
+		.attr("y", height - margin.bottom + 20)
 		.attr("fill", "black")
 		.style("text-anchor", "middle")
+		.style("font-size", "15px")
 		.text("年份");
 
 	// 添加Y轴
-	g.append("g").attr("class", "y-axis").call(d3.axisLeft(yScale))
-		.append("text")
+	g.append("g")
+		.attr("class", "y-axis")
+		.call(d3.axisLeft(yScale))
+		.selectAll("text")
+		.style("font-size", "12px");
+
+	// 添加Y轴标签
+	g.append("text")
 		.attr("transform", "rotate(-90)")
 		.attr("x", -(height - margin.top - margin.bottom) / 2)
-		.attr("y", -50)
+		.attr("y", -40)
 		.attr("fill", "black")
 		.style("text-anchor", "middle")
-		.text("生育率");
+		.style("font-size", "15px")
+		.text("人口自然增长率 (‰)");
 
 	// 添加图例
 	const legend = svg
@@ -169,8 +185,8 @@ function drawChart(svg, data) {
 		.append("rect")
 		.attr("x", 0)
 		.attr("y", (d, i) => i * 20)
-		.attr("width", 10)
-		.attr("height", 10)
+		.attr("width", 30)
+		.attr("height", 4)
 		.attr("fill", (d) => color(d));
 
 	legend
@@ -178,7 +194,7 @@ function drawChart(svg, data) {
 		.data(provinces)
 		.enter()
 		.append("text")
-		.attr("x", 20)
+		.attr("x", 40)
 		.attr("y", (d, i) => i * 20 + 9)
 		.text((d) => d);
 
@@ -202,7 +218,7 @@ function drawChart(svg, data) {
 		.attr("stroke", "gray")
 		.attr("stroke-dasharray", "4");
 
-	const xPosition2007 = xScale("2007");
+    const xPosition2007 = xScale("2007");
 	const xPosition2019 = xScale("2019");
 	const xPosition2023 = xScale("2023");
 	nextTick(() => {
@@ -212,21 +228,21 @@ function drawChart(svg, data) {
 
 		tooltipLeft.value.style.top = `${chartRect.top + scrollY}px`;
 		tooltipLeft.value.style.left = `${
-			chartRect.left + scrollX + margin.left + xPosition2007 + 60
+			chartRect.left + scrollX + margin.left + xPosition2007 
 		}px`;
 
 		tooltipMid.value.style.top = `${
 			chartRect.top + scrollY + margin.top
 		}px`;
 		tooltipMid.value.style.left = `${
-			chartRect.left + scrollX + margin.left + xPosition2019 + 120
+			chartRect.left + scrollX + margin.left + xPosition2019  + 20
 		}px`;
 
 		tooltipRight.value.style.top = `${
-			chartRect.top + scrollY + margin.top + 230
+			chartRect.top + scrollY + margin.top + 380
 		}px`;
 		tooltipRight.value.style.left = `${
-			chartRect.left + scrollX + margin.left + xPosition2023 + 200
+			chartRect.left + scrollX + margin.left + xPosition2023 + 100
 		}px`;
 	});
 }
@@ -245,6 +261,11 @@ onMounted(async () => {
 });
 </script>
 <style scoped>
+.text-container {
+	/* margin: 20px 20px; */
+	text-align: start;
+	line-height: 36px;
+}
 .tooltip {
 	position: absolute;
 	background-color: #f9f9f9;

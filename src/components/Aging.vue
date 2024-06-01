@@ -1,23 +1,14 @@
 <template>
 	<div class="container">
 		<h1>老龄化进程加快</h1>
-		<div ref="chart"></div>
 		<div class="text-container">
 			<p>
 				中国自改革开放以来，人口结构逐渐发生了重大变化。在人口红利时期，中国以其庞大的劳动力资源为支撑，取得了长期的经济增长。然而，随着时间的推移，人口结构发生了根本性的转变，老龄化问题日益突显。
 			</p>
-			<p>
-				中国于2022年的“65岁及以上”人口已达到20978万人，占比14.9%，正式标志着中国步入“中度老龄化”社会。这一数字的迅速增长以及老龄化进程的加速，给中国社会经济带来了严峻挑战。
-			</p>
-			<p>
-				造成这一现象的原因多方面，收入压力、时间和精力不足以及教育成本等因素导致了育龄群体“不愿生”“不敢生”，进而使得人口自然增长率持续下降。同时，随着社会发展，个体化动机越来越重要，女性生育动机转向个体化，导致生育率降低。教育程度提升也是影响生育率的重要因素，随着女性受教育程度的提高，延迟结婚和生育的可能性增加。
-			</p>
-			<p>
-				尽管一些地区出台了针对多子女家庭的优惠政策，但从数据上看，这些政策的效果有限。独生子女政策和全面二孩政策虽然在一定程度上影响了人口增长，但无法阻止老龄化进程的加速。事实上，中国人口红利已成为历史，老龄化问题已成为当务之急。
-			</p>
-			<p>
-				因此，中国政府需要加大力度，采取有效措施，应对人口老龄化和生育率下降的问题。这可能包括优化生育政策，提高生育率；加强宣传与引导，克服青年人恐育思想；第三，关注女性群体利益，切实减轻职场女性家庭与事业选择两难问题。
-			</p>
+		</div>
+		<div class="chart-container">
+			<h2>不同年龄段人口占比</h2>
+			<div ref="chart"></div>
 		</div>
 	</div>
 </template>
@@ -86,7 +77,7 @@ function drawChart(svg, data) {
 	const color = d3
 		.scaleOrdinal()
 		.domain(["young", "middle", "old"])
-		.range(d3.schemeCategory10);
+		.range(["#35d935", "#87CEFA", "#FFA500"]);
 
 	const stack = d3.stack().keys(["young", "middle", "old"]);
 
@@ -107,26 +98,34 @@ function drawChart(svg, data) {
 		.attr("height", (d) => y(d[0]) - y(d[1]))
 		.attr("width", x.bandwidth());
 
+	// 添加x轴
 	g.append("g")
 		.attr("class", "x-axis")
 		.attr("transform", `translate(0,${chartHeight})`)
 		.call(d3.axisBottom(x))
-		.append("text")
-		.attr("y", 35)
+		.style("font-size", "10px");
+
+	g.append("text")
+		.attr("y", chartHeight + 40)
 		.attr("x", chartWidth / 2)
 		.attr("fill", "black")
 		.style("text-anchor", "middle")
+		.style("font-size", "13px")
 		.text("年份");
 
+	// 添加y轴
 	g.append("g")
 		.attr("class", "y-axis")
 		.call(d3.axisLeft(y))
-		.append("text")
+		.style("font-size", "10px");
+
+	g.append("text")
 		.attr("transform", "rotate(-90)")
 		.attr("y", -45)
 		.attr("x", -chartHeight / 2)
 		.attr("fill", "black")
-		.style("text-anchor", "middle")
+        .style("text-anchor", "middle")
+        .style("font-size", "13px")
 		.text("占比(%)");
 
 	// 添加图例
@@ -137,7 +136,7 @@ function drawChart(svg, data) {
 			`translate(${margin.left + chartWidth + 20},${margin.top})`
 		);
 
-	const legendData = ["young", "middle", "old"];
+	const legendData = ["young", "middle", "old"].reverse();
 	const temp = {
 		young: "0-14岁",
 		middle: "15-64岁",
@@ -184,4 +183,11 @@ onMounted(async () => {
 	flex-direction: column;
 	align-items: center;
 }
+.line {
+	width: 100%;
+	min-width: 10px;
+	height: 30px;
+	background-color: #bd3124;
+}
+
 </style>

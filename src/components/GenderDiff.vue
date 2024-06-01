@@ -1,6 +1,6 @@
 <template>
 	<div class="container">
-		<h3>不同性别对各个观点的看法</h3>
+		<h2>不同性别对各个观点的看法</h2>
 		<div ref="chart"></div>
 	</div>
 </template>
@@ -10,7 +10,7 @@ import { onMounted, ref } from "vue";
 import * as d3 from "d3";
 
 const width = 1200;
-const height = 400;
+const height = 330;
 
 const chart = ref(null);
 
@@ -95,7 +95,8 @@ function drawChart(svg, data) {
 			"transform",
 			`translate(0, ${data.length * barMargin + gap + 35})`
 		) // 将x轴放在条形图下方
-		.attr("text-anchor", "middle")
+        .attr("text-anchor", "middle")
+        .attr("font-size", "13px")
 		.text("百分比");
 
 	// 图例矩形的宽度

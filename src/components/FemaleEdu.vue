@@ -1,15 +1,25 @@
 <template>
-	<h3>6岁及以上大专以上学历女性占比</h3>
-	<div ref="chart"></div>
+	<div class="row-container">
+		<div class="chart-container">
+			<h2>6岁及以上大专以上学历女性占比</h2>
+			<div ref="chart" id="edu-chart"></div>
+		</div>
+		<div class="text-container">
+			<p>
+				<strong>教育程度提升的影响：</strong>
+				随着女性受教育程度的提高，她们更倾向于追求个人事业和发展，延迟结婚和生育的可能性增加。受教育程度的提升使女性有更多的选择权和独立性，她们更加注重自身的成长和发展，而不是传统的婚姻和生育角色。
+			</p>
+		</div>
+	</div>
 </template>
 
 <script setup>
 import { onMounted, ref } from "vue";
 import * as d3 from "d3";
 
-const width = 800;
+const width = 600;
 const height = 400;
-const margin = { top: 20, right: 30, bottom: 50, left: 60 };
+const margin = { top: 20, right: 30, bottom: 60, left: 65 };
 const chart = ref(null);
 
 // 加载数据
@@ -69,21 +79,37 @@ function drawChart(svg, data) {
 			`translate(0, ${height - margin.top - margin.bottom})`
 		)
 		.call(d3.axisBottom(xScale))
-		.append("text")
+		.selectAll("text")
+		.attr("transform", "rotate(-45)") // 旋转角度
+		.style("font-size", "10px")
+		.style("text-anchor", "end"); // 文本对齐方式
+
+	// 添加X轴标签
+	g.append("text")
+		.attr("class", "x-axis-label")
 		.attr("x", (width - margin.left - margin.right) / 2)
-		.attr("y", 40)
+		.attr("y", height - margin.bottom + 30) // 调整Y轴位置以确保标签在图表下方
 		.attr("fill", "black")
 		.style("text-anchor", "middle")
+		.style("font-size", "13px")
 		.text("年份");
 
 	// 添加Y轴
-	g.append("g").attr("class", "y-axis").call(d3.axisLeft(yScale))
-		.append("text")
+	g.append("g")
+		.attr("class", "y-axis")
+		.call(d3.axisLeft(yScale))
+		.selectAll("text")
+		.style("font-size", "10px");
+
+	// 添加Y轴标签
+	g.append("text")
+		.attr("class", "y-axis-label")
 		.attr("transform", "rotate(-90)")
 		.attr("x", -(height - margin.top - margin.bottom) / 2)
 		.attr("y", -50)
 		.attr("fill", "black")
 		.style("text-anchor", "middle")
+		.style("font-size", "13px")
 		.text("大专及以上女性人口占比 (%)");
 }
 
@@ -100,15 +126,7 @@ onMounted(async () => {
 });
 </script>
 <style scoped>
-.axis path,
-.axis line {
-	fill: none;
-	stroke: black;
-	shape-rendering: crispEdges;
-}
-
-.axis text {
-	font-family: sans-serif;
-	font-size: 12px;
+#edu-chart {
+	margin: 0 2rem;
 }
 </style>

@@ -1,12 +1,13 @@
 <template>
 	<div class="container">
 		<h1>中国人口数据总览</h1>
-        <h3>人口增长情况（2000-2023）</h3>
-		<div ref="lineChart"></div>
-		<div ref="barChart"></div>
-		<p>
-			中国人口自然增长率在2000年后整体呈现逐渐降低趋势，在22年和23年出现负增长。22年的自然增长率为-0.6%，23年为-1.4%
-		</p>
+		<div class="text-container">
+			<p>
+				中国人口自然增长率在2000年后整体呈现逐渐降低趋势，在22年和23年出现负增长。22年的自然增长率为-0.6%，23年为-1.4%。其中，虽然有着2019年新冠肺炎疫情的影响，但总体趋势不变。
+			</p>
+		</div>
+		<h2>人口增长情况（2000-2023）</h2>
+		<div ref="chart"></div>
 		<div id="tooltip">
 			<p><span id="tooltip-year"></span></p>
 			<p><span id="tooltip-population"></span></p>
@@ -18,8 +19,7 @@
 import { onMounted, ref } from "vue";
 import * as d3 from "d3";
 
-const barChart = ref(null);
-const lineChart = ref(null);
+const chart = ref(null);
 
 // 加载数据
 async function loadData() {
@@ -40,23 +40,33 @@ async function loadData() {
 	return { lineData, barData };
 }
 
-// 绘制折线图
-function drawLineChart(svg, data) {
-	const margin = { top: 20, right: 30, bottom: 50, left: 60 };
-	const width = 800 - margin.left - margin.right;
-	const height = 500 - margin.top - margin.bottom;
+// 绘制合并图表
+function drawChart(svg, lineData, barData) {
+	const margin = { top: 20, right: 60, bottom: 50, left: 65 };
+	const width = 850 - margin.left - margin.right;
+	const height = 600 - margin.top - margin.bottom;
 
 	const xScale = d3
 		.scaleBand()
-		.domain(data.map((d) => d.year))
+		.domain(lineData.map((d) => d.year))
 		.range([0, width])
 		.padding(0.1);
 
-	const yScale = d3
+	// 左侧Y轴：人数
+	const yLeftScale = d3
 		.scaleLinear()
 		.domain([
-			d3.min(data, (d) => d.population) * 0.95,
-			d3.max(data, (d) => d.population) * 1.05,
+			d3.min(lineData, (d) => d.population) * 0.95,
+			d3.max(lineData, (d) => d.population) * 1.05,
+		])
+		.range([height, 0]);
+
+	// 右侧Y轴：增长率
+	const yRightScale = d3
+		.scaleLinear()
+		.domain([
+			d3.min(barData, (d) => d.growthRate) * 1.05,
+			d3.max(barData, (d) => d.growthRate) * 1.05,
 		])
 		.range([height, 0]);
 
@@ -64,13 +74,27 @@ function drawLineChart(svg, data) {
 		.append("g")
 		.attr("transform", `translate(${margin.left}, ${margin.top})`);
 
+	// 绘制柱状图
+	g.selectAll("rect")
+		.data(barData)
+		.join("rect")
+		.attr("class", "bar")
+		.attr("x", (d) => xScale(d.year))
+		.attr("y", (d) => yRightScale(Math.max(0, d.growthRate)))
+		.attr("width", xScale.bandwidth())
+		.attr("height", (d) =>
+			Math.abs(yRightScale(d.growthRate) - yRightScale(0))
+		)
+		.attr("fill", (d) => (d.growthRate < 0 ? "#a60126" : "lightgray"));
+
+	// 绘制折线图
 	const line = d3
 		.line()
 		.x((d) => xScale(d.year) + xScale.bandwidth() / 2)
-		.y((d) => yScale(d.population));
+		.y((d) => yLeftScale(d.population));
 
 	g.append("path")
-		.datum(data)
+		.datum(lineData)
 		.attr("fill", "none")
 		.attr("stroke", "steelblue")
 		.attr("stroke-width", 2)
@@ -78,10 +102,10 @@ function drawLineChart(svg, data) {
 
 	// 添加圆点
 	g.selectAll("circle")
-		.data(data)
+		.data(lineData)
 		.join("circle")
 		.attr("cx", (d) => xScale(d.year) + xScale.bandwidth() / 2)
-		.attr("cy", (d) => yScale(d.population))
+		.attr("cy", (d) => yLeftScale(d.population))
 		.attr("r", 4)
 		.attr("fill", "steelblue")
 		.attr("cursor", "pointer")
@@ -104,124 +128,63 @@ function drawLineChart(svg, data) {
 
 	// 添加X轴
 	g.append("g")
+		.attr("class", "x-axis")
 		.attr("transform", `translate(0, ${height})`)
 		.call(d3.axisBottom(xScale))
-		.append("text")
+		.selectAll("text")
+		.style("font-size", "10px");
+
+	// 添加X轴标签
+	g.append("text")
 		.attr("x", width / 2)
-		.attr("y", 40)
+		.attr("y", height + 40)
 		.attr("fill", "black")
 		.style("text-anchor", "middle")
+		.style("font-size", "13px")
 		.text("年份");
 
-	// 添加Y轴
-	g.append("g").call(d3.axisLeft(yScale))
-		.append("text")
+	// 添加左侧Y轴
+	g.append("g")
+		.call(d3.axisLeft(yLeftScale))
+		.selectAll("text")
+		.style("font-size", "10px");
+
+	g.append("text")
 		.attr("transform", "rotate(-90)")
 		.attr("x", -height / 2)
 		.attr("y", -50)
 		.attr("fill", "black")
 		.style("text-anchor", "middle")
+		.style("font-size", "13px")
 		.text("总人口 (万人)");
 
-	// 添加竖直虚线
-	const xPosition = xScale("2020");
-	g.append("line")
-		.attr("x1", xPosition + 10)
-		.attr("y1", 0)
-		.attr("x2", xPosition + 10)
-		.attr("y2", height)
-		.attr("stroke", "gray")
-		.attr("stroke-dasharray", "4");
-
-	// 添加文本
-	g.append("text")
-		.attr("x", xPosition + 10)
-		.attr("y", 200)
-		.attr("font-size", 12)
-		.text("新冠首个确诊病例发病");
-
-	g.append("text")
-		.attr("x", xPosition + 10)
-		.attr("y", 220)
-		.attr("font-size", 12)
-		.text("（2019.12.1）");
-
-}
-
-// 绘制柱状图
-function drawBarChart(svg, data) {
-	const margin = { top: 20, right: 30, bottom: 50, left: 60 };
-	const width = 800 - margin.left - margin.right;
-	const height = 500 - margin.top - margin.bottom;
-
-	const xScale = d3
-		.scaleBand()
-		.domain(data.map((d) => d.year))
-		.range([0, width])
-		.padding(0.1);
-
-	const yScale = d3
-		.scaleLinear()
-		.domain([
-			d3.min(data, (d) => d.growthRate) * 1.05,
-			d3.max(data, (d) => d.growthRate) * 1.05,
-		])
-		.range([height, 0]);
-
-	const g = svg
-		.append("g")
-		.attr("transform", `translate(${margin.left}, ${margin.top})`);
-
-	g.selectAll("rect")
-		.data(data)
-		.join("rect")
-		.attr("class", "bar")
-		.attr("x", (d) => xScale(d.year))
-		.attr("y", (d) => yScale(Math.max(0, d.growthRate)))
-		.attr("width", xScale.bandwidth())
-		.attr("height", (d) => Math.abs(yScale(d.growthRate) - yScale(0)))
-		.attr("fill", (d) => (d.growthRate < 0 ? "red" : "lightgray"));
-
-	// 添加X轴
+	// 添加右侧Y轴
 	g.append("g")
-		.attr("transform", `translate(0, ${height})`)
-		.call(d3.axisBottom(xScale))
-		.append("text")
-		.attr("x", width / 2)
-		.attr("y", 40)
-		.attr("fill", "black")
-		.style("text-anchor", "middle")
-		.text("年份");
-
-	// 添加Y轴
-	g.append("g").call(d3.axisLeft(yScale))
-		.append("text")
+		.attr("transform", `translate(${width}, 0)`)
+		.call(d3.axisRight(yRightScale))
+		.selectAll("text")
+        .style("font-size", "10px");
+        
+	g.append("text")
 		.attr("transform", "rotate(-90)")
 		.attr("x", -height / 2)
-		.attr("y", -50)
+		.attr("y", width + 40)
 		.attr("fill", "black")
-		.style("text-anchor", "middle")
+        .style("text-anchor", "middle")
+        .style("font-size", "13px")
 		.text("增长率 (%)");
-
 }
 
 onMounted(async () => {
 	const { lineData, barData } = await loadData();
 
-	const svgBar = d3
-		.select(barChart.value)
+	const svg = d3
+		.select(chart.value)
 		.append("svg")
-		.attr("width", 800)
-		.attr("height", 500);
+		.attr("width", 850)
+		.attr("height", 600);
 
-	const svgLine = d3
-		.select(lineChart.value)
-		.append("svg")
-		.attr("width", 800)
-		.attr("height", 500);
-
-	drawLineChart(svgLine, lineData);
-	drawBarChart(svgBar, barData);
+	drawChart(svg, lineData, barData);
 });
 </script>
 <style scoped>
@@ -235,6 +198,6 @@ onMounted(async () => {
 	pointer-events: none;
 	z-index: 10;
 	width: 200;
-    height: 100px;
+	height: 100px;
 }
 </style>
