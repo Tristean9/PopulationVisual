@@ -65,14 +65,14 @@ function drawChart(svg, data) {
 		.attr("height", barHeight) // 设置固定高度
 		.attr("fill", "#ADD8E6");
 
-	// 添加建筑物名称标签
+	// 添加因素标签
 	svg.selectAll(".label")
 		.data(data)
 		.enter()
 		.append("text")
 		.attr("class", "label")
 		.attr("y", (d, i) => i * barMargin + gap + barHeight / 2) // 向下移动
-		.attr("x", 250) //
+		.attr("x", 280) //
 		.attr("text-anchor", "end")
 		.text((d) => d.viewpoint);
 
