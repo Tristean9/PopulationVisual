@@ -30,7 +30,7 @@ async function loadData() {
 	const chartData = data
 		.map((d) => ({
 			year: d["年份"],
-			value: +d["大专及以上女性人口占比"],
+			value: +d["大专及以上女性人口占比"]*100,
 		}))
 		.reverse();
 

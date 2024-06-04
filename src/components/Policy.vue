@@ -218,33 +218,30 @@ function drawChart(svg, data) {
 		.attr("stroke", "gray")
 		.attr("stroke-dasharray", "4");
 
-    const xPosition2007 = xScale("2007");
+	const xPosition2007 = xScale("2007");
 	const xPosition2019 = xScale("2019");
 	const xPosition2023 = xScale("2023");
-	nextTick(() => {
-		const chartRect = chart.value.getBoundingClientRect();
-		const scrollX = window.scrollX;
-		const scrollY = window.scrollY;
 
-		tooltipLeft.value.style.top = `${chartRect.top + scrollY}px`;
-		tooltipLeft.value.style.left = `${
-			chartRect.left + scrollX + margin.left + xPosition2007 
-		}px`;
+	const chartRect = chart.value.getBoundingClientRect();
+	const scrollX = window.scrollX;
+	const scrollY = window.scrollY;
 
-		tooltipMid.value.style.top = `${
-			chartRect.top + scrollY + margin.top
-		}px`;
-		tooltipMid.value.style.left = `${
-			chartRect.left + scrollX + margin.left + xPosition2019  + 20
-		}px`;
+	tooltipLeft.value.style.top = `${chartRect.top + scrollY}px`;
+	tooltipLeft.value.style.left = `${
+		chartRect.left + scrollX + margin.left + xPosition2007
+	}px`;
 
-		tooltipRight.value.style.top = `${
-			chartRect.top + scrollY + margin.top + 380
-		}px`;
-		tooltipRight.value.style.left = `${
-			chartRect.left + scrollX + margin.left + xPosition2023 + 100
-		}px`;
-	});
+	tooltipMid.value.style.top = `${chartRect.top + scrollY + margin.top}px`;
+	tooltipMid.value.style.left = `${
+		chartRect.left + scrollX + margin.left + xPosition2019 + 20
+	}px`;
+
+	tooltipRight.value.style.top = `${
+		chartRect.top + scrollY + margin.top + 380
+	}px`;
+	tooltipRight.value.style.left = `${
+		chartRect.left + scrollX + margin.left + xPosition2023 + 100
+	}px`;
 }
 
 onMounted(async () => {
@@ -255,9 +252,8 @@ onMounted(async () => {
 		.append("svg")
 		.attr("width", width)
 		.attr("height", height);
-	nextTick(() => {
-		drawChart(svg, data);
-	});
+
+	drawChart(svg, data);
 });
 </script>
 <style scoped>
@@ -268,15 +264,15 @@ onMounted(async () => {
 }
 
 #button-container {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
+	display: flex;
+	justify-content: center;
+	gap: 20px;
 }
 .tooltip {
 	position: absolute;
 	background-color: #f9f9f9;
 	border: 1px solid #ccc;
-    border-radius: 4px;
+	border-radius: 4px;
 	padding: 0 10px;
 	z-index: 10;
 
