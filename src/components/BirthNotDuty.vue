@@ -1,7 +1,5 @@
 <template>
 	<div class="container">
-		<!-- <h1>生育不再是义务</h1> -->
-
 		<female-edu />
 		<gender-diff />
 		<div class="text-container">

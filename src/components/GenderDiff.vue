@@ -19,9 +19,6 @@ async function loadData() {
 	const data = await d3.csv(
 		`${import.meta.env.BASE_URL}data/男女性观念差别.csv`
 	);
-
-	// console.log(data);
-
 	const chartData = data
 		.map((d) => ({
 			viewpoint: d["观点"],
@@ -29,9 +26,6 @@ async function loadData() {
 			female: +d["女性"],
 		}))
 		.reverse();
-
-	// console.log(chartData);
-
 	return chartData;
 }
 

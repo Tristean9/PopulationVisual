@@ -26,7 +26,7 @@
 						type="range"
 						min="2000"
 						max="2023"
-                        class="year-slider"
+						class="year-slider"
 					/>
 					<span>{{ selectedYear }}</span>
 				</div>
@@ -75,7 +75,7 @@ function drawHeatmap(year) {
 	// 确定统一的比例尺范围
 	const colorScale = d3
 		.scaleSequential(d3.interpolateYlOrRd)
-		.domain([-5, 10]);
+		.domain([-6, 16]);
 
 	// 使用D3地理图谱绘制地图
 	const projection = d3
@@ -164,7 +164,7 @@ function drawHeatmap(year) {
 
 		const legendScale = d3
 			.scaleLinear()
-			.domain([-5, 10]) // 统一的范围
+			.domain([-6, 16]) // 统一的范围
 			.range([legendHeight, 0]);
 
 		const legendAxis = d3
@@ -179,10 +179,6 @@ function drawHeatmap(year) {
 			.selectAll("text")
 			.attr("dy", "0.32em");
 	});
-}
-
-function updateHeatmap() {
-	drawHeatmap(selectedYear.value);
 }
 
 onMounted(async () => {
@@ -211,16 +207,15 @@ watch(selectedYear, (newValue) => {
 	position: absolute;
 	background-color: #f9f9f9;
 	border: 1px solid #d3d3d3;
-    border-radius: 4px;
+	border-radius: 4px;
 	padding: 5px;
 	display: none;
 }
 
-#chart-controls-container{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-
+#chart-controls-container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
 }
 .controls {
 	display: flex;
@@ -271,5 +266,4 @@ watch(selectedYear, (newValue) => {
 	border-radius: 50%;
 	cursor: pointer;
 }
-
 </style>

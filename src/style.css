@@ -82,6 +82,18 @@ button:focus-visible {
 .text-container p {
 	font-size: 1.6em;
 }
+
+.tooltip-box {
+	background-color: #f9f9f9;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	padding: 0 10px;
+	font-size: 14px;
+    text-align: start;
+}
+.hidden {
+	display: none;
+}
 @media (prefers-color-scheme: light) {
 	:root {
 		color: #213547;

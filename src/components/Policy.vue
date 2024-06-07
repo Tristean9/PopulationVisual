@@ -10,37 +10,16 @@
 			<h2>部分省份人口自然增长率对比</h2>
 			<div ref="chart"></div>
 		</div>
-		<div
-			ref="tooltipLeft"
-			class="tooltip left"
-			v-show="showTooltip === 'left'"
-		>
+		<div ref="tooltipLeft" id="tooltip-left"  class="tooltip left" v-show="showTooltip === 'left'">
 			<p>
 				东北地区的计划生育政策比其他地区更为严格，这主要是因为当时东北三省的经济发展速度较快，而南方地区还在起步阶段。因此，东北地区的计划生育政策执行力度大，导致了东北地区的生育率相对较低。
 			</p>
 		</div>
-		<div
-			ref="tooltipMid"
-			class="tooltip mid"
-			v-show="showTooltip === 'mid'"
-		>
+		<div ref="tooltipMid" id="tooltip-mid"  class="tooltip mid" v-show="showTooltip === 'mid'">
 			<p>全面废除独生子女政策，第二年的人口增长率有明显提高</p>
 		</div>
-		<div
-			ref="tooltipRight"
-			class="tooltip right"
-			v-show="showTooltip === 'right'"
-		>
+		<div ref="tooltipRight" id="tooltip-right" class="tooltip right" v-show="showTooltip === 'right'">
 			<p>中央政府开放三胎政策，但对人口增长并无帮助</p>
-		</div>
-		<div id="button-container">
-			<button @click="showTooltip = 'left'">
-				2016年以前：计划生育时期
-			</button>
-			<button @click="showTooltip = 'mid'">
-				2016年：废除独生子女政策
-			</button>
-			<button @click="showTooltip = 'right'">2021年：开放三胎政策</button>
 		</div>
 	</div>
 </template>
@@ -52,19 +31,24 @@ import * as d3 from "d3";
 const showTooltip = ref(null);
 
 const width = 1000;
-const height = 600;
-const margin = { top: 20, right: 100, bottom: 50, left: 60 };
+const height = 700; // 增加SVG高度
+const chartHeight = 600; // 图表的实际高度
+const margin = { top: 20, right: 100, bottom: 60, left: 60 }; // 增加底部的margin
 const chart = ref(null);
 const tooltipLeft = ref(null);
 const tooltipMid = ref(null);
 const tooltipRight = ref(null);
+
+// 显示或隐藏气泡框
+const toggleTooltip = (position) => {
+	showTooltip.value = position;
+};
 
 // 加载数据
 async function loadData() {
 	const data = await d3.csv(
 		`${import.meta.env.BASE_URL}data/若干省生育率.csv`
 	);
-	// console.log(data);
 
 	let all_data = [];
 	for (let i = 0; i < data.length; i++) {
@@ -82,9 +66,69 @@ async function loadData() {
 		}
 		all_data.push(temp);
 	}
-	// console.log(all_data);
-
 	return all_data;
+}
+
+// 在SVG内部添加按钮
+function addButtons(svg) {
+	const buttonData = [
+		{ label: "2016年以前：计划生育时期", position: "left" },
+		{ label: "2016年：废除独生子女政策", position: "mid" },
+		{ label: "2021年：开放三胎政策", position: "right" },
+	];
+
+	const buttonWidth = 300;
+	const buttonHeight = 45;
+	const buttonSpacing = 0;
+	const totalButtonWidth =
+		buttonData.length * (buttonWidth + buttonSpacing) - buttonSpacing;
+	const buttonStartX = (width - totalButtonWidth) / 2;
+
+	svg.selectAll(".button")
+		.data(buttonData)
+		.enter()
+		.append("foreignObject")
+		.attr("x", (d, i) => buttonStartX + i * (buttonWidth + buttonSpacing))
+		.attr("y", height - 100) // 确保按钮在标签下方
+		.attr("width", buttonWidth)
+        .attr("height", buttonHeight)
+		.append("xhtml:button")
+		.attr("class", "chart-button")
+		.on("click", (event, d) => {
+			toggleTooltip(d.position);
+			const tooltipElements = {
+				left: tooltipLeft.value,
+				mid: tooltipMid.value,
+				right: tooltipRight.value,
+			};
+
+			const tooltipPositions = {
+				left: {
+					left: event.pageX - 100 +  "px",
+					top: event.pageY - 600 + "px",
+				},
+				mid: {
+					left: event.pageX + 90+ "px",
+					top: event.pageY - 600 + "px",
+				},
+				right: {
+					left: event.pageX + 50+ "px",
+					top: event.pageY - 230 + "px",
+				},
+			};
+
+			Object.keys(tooltipElements).forEach((key) => {
+				const tooltip = tooltipElements[key];
+				if (key === d.position) {
+					tooltip.style.display = "block";
+					tooltip.style.left = tooltipPositions[key].left;
+					tooltip.style.top = tooltipPositions[key].top; // 设定单独的上方位置
+				} else {
+					tooltip.style.display = "none";
+				}
+			});
+		})
+		.text((d) => d.label);
 }
 
 // 绘制折线图
@@ -104,7 +148,7 @@ function drawChart(svg, data) {
 			d3.min(data, (c) => d3.min(c.oneData, (d) => d.value)) * 1.05,
 			d3.max(data, (c) => d3.max(c.oneData, (d) => d.value)) * 1.05,
 		])
-		.range([height - margin.top - margin.bottom, 0]);
+		.range([chartHeight - margin.top - margin.bottom, 0]);
 
 	const color = d3.scaleOrdinal(d3.schemeCategory10).domain(provinces);
 
@@ -137,7 +181,7 @@ function drawChart(svg, data) {
 		.attr("class", "x-axis")
 		.attr(
 			"transform",
-			`translate(0, ${height - margin.top - margin.bottom})`
+			`translate(0, ${chartHeight - margin.top - margin.bottom})`
 		)
 		.call(d3.axisBottom(xScale))
 		.selectAll("text")
@@ -147,7 +191,7 @@ function drawChart(svg, data) {
 	g.append("text")
 		.attr("class", "x-axis-label")
 		.attr("x", (width - margin.left - margin.right) / 2)
-		.attr("y", height - margin.bottom + 20)
+		.attr("y", chartHeight - margin.top - margin.bottom + 40) // 在X轴下方
 		.attr("fill", "black")
 		.style("text-anchor", "middle")
 		.style("font-size", "15px")
@@ -163,7 +207,7 @@ function drawChart(svg, data) {
 	// 添加Y轴标签
 	g.append("text")
 		.attr("transform", "rotate(-90)")
-		.attr("x", -(height - margin.top - margin.bottom) / 2)
+		.attr("x", -(chartHeight - margin.top - margin.bottom) / 2)
 		.attr("y", -40)
 		.attr("fill", "black")
 		.style("text-anchor", "middle")
@@ -204,7 +248,7 @@ function drawChart(svg, data) {
 		.attr("x1", xPosition2016 + 12)
 		.attr("y1", margin.top)
 		.attr("x2", xPosition2016 + 12)
-		.attr("y2", height - margin.bottom - 20)
+		.attr("y2", chartHeight - margin.bottom - 20)
 		.attr("stroke", "gray")
 		.attr("stroke-dasharray", "4");
 
@@ -214,34 +258,12 @@ function drawChart(svg, data) {
 		.attr("x1", xPosition2021 + 12)
 		.attr("y1", margin.top)
 		.attr("x2", xPosition2021 + 12)
-		.attr("y2", height - margin.bottom - 20)
+		.attr("y2", chartHeight - margin.bottom - 20)
 		.attr("stroke", "gray")
 		.attr("stroke-dasharray", "4");
 
-	const xPosition2007 = xScale("2007");
-	const xPosition2019 = xScale("2019");
-	const xPosition2023 = xScale("2023");
-
-	const chartRect = chart.value.getBoundingClientRect();
-	const scrollX = window.scrollX;
-	const scrollY = window.scrollY;
-
-	tooltipLeft.value.style.top = `${chartRect.top + scrollY}px`;
-	tooltipLeft.value.style.left = `${
-		chartRect.left + scrollX + margin.left + xPosition2007
-	}px`;
-
-	tooltipMid.value.style.top = `${chartRect.top + scrollY + margin.top}px`;
-	tooltipMid.value.style.left = `${
-		chartRect.left + scrollX + margin.left + xPosition2019 + 20
-	}px`;
-
-	tooltipRight.value.style.top = `${
-		chartRect.top + scrollY + margin.top + 380
-	}px`;
-	tooltipRight.value.style.left = `${
-		chartRect.left + scrollX + margin.left + xPosition2023 + 100
-	}px`;
+	// 在SVG内部添加按钮
+	addButtons(svg);
 }
 
 onMounted(async () => {
@@ -252,22 +274,18 @@ onMounted(async () => {
 		.append("svg")
 		.attr("width", width)
 		.attr("height", height);
-
-	drawChart(svg, data);
+	nextTick(() => {
+		drawChart(svg, data);
+	});
 });
 </script>
-<style scoped>
-.text-container {
-	/* margin: 20px 20px; */
-	text-align: start;
-	line-height: 36px;
+<style>
+.chart-button {
+	margin: 0 10px;
+	padding: 10px 20px;
+	cursor: pointer;
 }
 
-#button-container {
-	display: flex;
-	justify-content: center;
-	gap: 20px;
-}
 .tooltip {
 	position: absolute;
 	background-color: #f9f9f9;
